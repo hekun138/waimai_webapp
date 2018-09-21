@@ -49,6 +49,9 @@ module.exports = {
 		hot: true
 	},
 	resolve: {
+		alias: {
+			component: path.resolve(srcRoot, 'component')
+		},
 		extensions: ['.js','.jsx']
 	},
 	entry: entryMap,

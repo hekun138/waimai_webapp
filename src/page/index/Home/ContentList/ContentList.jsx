@@ -2,6 +2,7 @@ import React from 'react';
 import './ContentList.scss';
 import { connect } from 'react-redux';
 import ListItem from './ListItem/ListItem.jsx';
+import ScrollView from 'component/ScrollView/ScrollView.jsx';
 import { getListData } from '../../actions/contentListAction.js';
 /**
 * @constructor <ContentList />
@@ -11,11 +12,30 @@ import { getListData } from '../../actions/contentListAction.js';
 class ContentList extends React.Component {
 	constructor(props) {
 		super(props);
-		this.fetchData();
+		//记录当前页码
+		this.page = 0;
+		this.fetchData(0);
+		//标识页面是否可以滚动
+		this.state = {
+			isend: false,
+			loadingText: '加载中'
+		}
 	}
 
-	fetchData() {
-		this.props.dispatch(getListData())
+	onLoadPage() {
+		this.page++;			
+		//最多滚动3页
+		if (this.page > 3) {
+			this.setState({
+				isend:true
+			})
+		}else {
+			this.fetchData(this.page);
+		}
+	}
+
+	fetchData(page) {
+		this.props.dispatch(getListData(page))
 	}
 
 	renderItems() {
@@ -33,7 +53,9 @@ class ContentList extends React.Component {
 					<span>附近商家</span>
 					<span className="title-line"></span>
 				</h4>
-				{this.renderItems()}	
+				<ScrollView loadCallback={this.onLoadPage.bind(this)} isend={this.state.isend}>
+					{this.renderItems()}					
+				</ScrollView>
 			</div>
 		);
 	}
