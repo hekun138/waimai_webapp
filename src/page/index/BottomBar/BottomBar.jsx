@@ -1,8 +1,7 @@
 import './BottomBar.scss';
 import React from 'react';
 import { connect } from 'react-redux';
-
-import { changeTab } from '../actions/tabAction';
+import { NavLink, withRouter } from 'react-router-dom';
 /**
 * @constructor <BottomBar>
 * @description 首页底部tab栏
@@ -14,9 +13,10 @@ class BottomBar extends React.Component {
 	}
 
 	changeTab(item) {
-		this.props.dispatch(changeTab({
-			activeKey: item.key
-		}))
+		this.props.history.replace(item.key)	
+		// this.props.dispatch(changeTab({
+		// 	activeKey: item.key
+		// }))
 	}
 
 	renderItem() {
@@ -24,14 +24,11 @@ class BottomBar extends React.Component {
 
 		return tabs.map((item, index) => {
 			let cls = item.key + ' btn-item';
-			if(item.key === this.props.activeKey){
-				cls += ' active';
-			}	
 			return (
-				<div key={index} className={cls} onClick={() => this.changeTab(item)}>
+				<NavLink key={index} className={cls} replace={true} to={"/" + item.key} activeClassName="active" onClick={() => this.changeTab(item)}>
 					<div className="tab-icon"></div>
 					<div className="btn-name">{item.name}</div>
-				</div>
+				</NavLink>
 			)
 		})
 	}
@@ -45,9 +42,9 @@ class BottomBar extends React.Component {
 	}
 }
 
-export default connect(
+export default withRouter(connect(
 	state => ({
 		tabs: state.tabReducer.tabs,
 		activeKey: state.tabReducer.activeKey
 	})
-)(BottomBar);
+)(BottomBar));
